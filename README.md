@@ -21,55 +21,79 @@ Training with Keras Sequential API
 
 Layers: Conv1D, MaxPooling1D, Dense, Dropout, BatchNormalization
 
-🛠️ Setup & Installation
-bash
-Copy
-Edit
-# Clone the repository
-git clone https://github.com/your-repo/speech-emotion-recognition.git
-cd speech-emotion-recognition
+🎙️ Speech Emotion Recognition (SER) System
+This project is a Speech Emotion Recognition (SER) system built using deep learning and signal processing. It consists of two main components:
 
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+A Jupyter Notebook (Model.ipynb) that trains a Convolutional Neural Network (CNN) to classify emotions from speech.
 
-# Install dependencies
-pip install -r requirements.txt
-Requirements
-Python 3.7+
-
-numpy, pandas, librosa, seaborn, matplotlib
-
-scikit-learn
-
-keras / tensorflow
-
-🚀 Running the Notebook
-Run the Model.ipynb notebook using Jupyter:
-
-bash
-Copy
-Edit
-jupyter notebook Model.ipynb
-Ensure that the dataset paths (Ravdess, Tess, EmoDB) are correctly set before running.
-
-📊 Outputs
-Emotion classification results
-
-Confusion matrix and evaluation metrics
-
-Spectrogram visualizations of audio data
+A Flask-based API (real.py) that performs real-time emotion recognition on audio files (e.g., from Firebase).
 
 📁 Project Structure
-mathematica
+graphql
 Copy
 Edit
-├── Model.ipynb
-├── README.md
-├── requirements.txt
-├── [Audio Dataset Folders]
-└── models/
-📌 Notes
-You may need to adjust the file paths for datasets depending on your local setup.
+├── Model.ipynb                 # Jupyter notebook for training the CNN model
+├── real.py                     # Flask API for real-time prediction
+├── model.h5                    # Trained CNN model
+├── features.csv                # Training features for scaler and encoder
+├── requirements.txt            # Python dependencies
+├── README.md                   # Project documentation
+└── Testing/                    # Temporary folder for audio chunks (runtime only)
+🧠 Algorithm Overview
+Model Training (Model.ipynb)
+Datasets:
 
-This project filters warnings and deprecated messages for a cleaner output.
+RAVDESS, TESS, EmoDB (emotion-labeled speech datasets)
+
+Feature Extraction:
+
+MFCCs (Mel-Frequency Cepstral Coefficients)
+
+Chroma STFT, ZCR, RMS, Mel Spectrogram
+
+CNN Architecture:
+
+Conv1D, MaxPooling1D, BatchNormalization, Dense, Dropout
+
+Trained with Keras Sequential API
+
+Multi-class classification using Softmax
+
+Evaluation:
+
+Accuracy, confusion matrix, and classification report
+
+Real-Time Prediction (real.py)
+Input:
+
+Accepts a POST request to /predict with a Firebase URL containing .wav audio.
+
+Audio Processing:
+
+Downloads audio from Firebase
+
+Splits it into 7-second chunks using pydub
+
+Prediction:
+
+For each chunk:
+
+Extracts features (same as during training)
+
+Scales them using a saved StandardScaler
+
+Predicts emotion using the CNN (model.h5)
+
+Aggregates results to find the most likely emotion and its percentage
+
+Output:
+
+JSON response with:
+
+final_emotion
+
+percentage
+
+predicted_emotions (for each chunk)
+
+
